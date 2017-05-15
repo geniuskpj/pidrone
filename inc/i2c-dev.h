@@ -143,19 +143,22 @@ union i2c_smbus_data {
 
 /* Note: 10-bit addresses are NOT supported! */
 
+
 /* This is the structure as used in the I2C_SMBUS ioctl call */
-struct i2c_smbus_ioctl_data {
-	char read_write;
-	__u8 command;
-	int size;
-	union i2c_smbus_data *data;
-};
+
+//struct i2c_smbus_ioctl_data {
+//	char read_write;
+//	__u8 command;
+//	int size;
+//	union i2c_smbus_data *data;
+//};
 
 /* This is the structure as used in the I2C_RDWR ioctl call */
-struct i2c_rdwr_ioctl_data {
-	struct i2c_msg *msgs;	/* pointers to i2c_msgs */
-	int nmsgs;		/* number of i2c_msgs */
-};
+
+//struct i2c_rdwr_ioctl_data {
+//	struct i2c_msg *msgs;	/* pointers to i2c_msgs */
+//	int nmsgs;		/* number of i2c_msgs */
+//};
 
 
 static inline __s32 i2c_smbus_access(int file, char read_write, __u8 command, 

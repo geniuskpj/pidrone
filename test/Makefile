@@ -2,20 +2,29 @@ CC := g++
 
 EXTRAINCDIRS += -I "../inc"
 EXTRALDFLAGS += -L/usr/local/lib
-EXTRALIBS += -lRTIMULib -lwiringPi
+EXTRALIBS += -lRTIMULib -lwiringPi -lm -lmosquitto -lwiringPiPca9685 -lpthread -lwiringPi
 
 CFLAGS +=
 
-MYOBJS = ../inc/Sonar.o
+MYOBJS = ../inc/Sonar.o ../inc/nmea.o ../inc/gps.o ../inc/serial.o
 
 .PHONY: all	
-all: bin/sonartest bin/imutest bin/ledtest
+all: ../inc/Sonar.o ../inc/nmea.o ../inc/gps.o ../inc/serial.o bin/sonartest bin/imutest bin/ledtest
 
 .PHONY: clean
 clean:
-	rm -rf bin/*.o bin/*
+	rm -rf bin/*.o bin/* rm -rf ../inc/*.o
 
-../inc/%.o: ../inc/%.cxx
+../inc/%.o : ../inc/%.cxx 
+	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS}
+
+../inc/gps.o : ../inc/gps.c
+	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS}
+
+../inc/serial.o : ../inc/serial.c
+	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS}
+
+../inc/nmea.o : ../inc/nmea.c
 	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS}
 
 bin/imutest : imutest.cxx

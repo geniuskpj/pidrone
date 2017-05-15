@@ -6,11 +6,13 @@
 #include <iostream>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
+
+
 class SONAR
 {
 public:
 	uint16_t id;
-	float distance;
+	int distance;
 	SONAR(uint16_t _id);
 	virtual bool RequestData();
 	virtual ~SONAR();

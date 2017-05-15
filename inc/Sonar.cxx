@@ -23,7 +23,7 @@
 
 
 #include "Sonar.h"
-
+#include <RTIMULib.h>
 SONAR::SONAR(uint16_t _id)
 {
 	id=wiringPiI2CSetup(_id);
@@ -42,4 +42,19 @@ uint16_t SONAR::GetValues()
 SONAR::~SONAR()
 {
 
+}
+
+void SONAR::SetID(uint16_t newid)
+{
+                    wiringPiI2CWriteReg8(id,0,0xA0);
+                    usleep(20000);
+                    wiringPiI2CWriteReg8(id,0,0xAA);
+                    usleep(20000);
+                    wiringPiI2CWriteReg8(id,0,0xA5);
+                    usleep(20000);
+                    if(newid>0x77)
+                    {
+                        newid=0x77;
+                    }
+                    wiringPiI2CWriteReg8(id,0,newid*2);
 }
