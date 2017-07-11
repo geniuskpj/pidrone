@@ -47,33 +47,34 @@ int displayImage(__u16 bmp[], int res, int daddress, int file)
         }
         res = i2c_smbus_write_i2c_block_data(file, daddress, 16,
                 (__u8 *)block);
-        //usleep(100);
 }
 void ledScroll(uint16_t  dBuffer[8][15*8],int length, int& letter,int& y)
 {
-			if(letter<(length-1)){
-        			if(y<8)
-        			{
-	    				for(int i=0; i<8; i++)
-	    				{
-						bitShifted[i] = (dBuffer[i][letter]) << y | (dBuffer[i][letter+1]) >> (8-y);
-						bitShifted[i]  = reverseBits(bitShifted[i]);
-						}
-			        	displayImage(bitShifted,res, daddress, file);
-		    			y++;
+			if(letter<(length-1))
+			{
+				if(y<8)
+				{
+    				for(int i=0; i<8; i++)
+    				{
+					bitShifted[i] = (dBuffer[i][letter]) << y | (dBuffer[i][letter+1]) >> (8-y);
+					bitShifted[i]  = reverseBits(bitShifted[i]);
 					}
-					else
-					{
-						letter++;
-						y=0;
-					}
+		        	displayImage(bitShifted,res, daddress, file);
+	    			y++;
+				}
+				else
+				{
+					letter++;
+					y=0;
+				}
 					
-					}
-					else
-					{
-						letter=0;
 					
-					}
+			}
+			else
+			{
+				letter=0;
+					
+			}
 }
 
 void setBuffer(const char *text,uint16_t (*dBuffer)[15*8],int& length)

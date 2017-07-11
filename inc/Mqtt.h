@@ -21,7 +21,8 @@ void message_callback(struct mosquitto *mosq,void *obj,const struct mosquitto_me
 	{
 		msg=(char *)message->payload;
 		//printf("got message '%.*s' for topic '%s'\r\n",message->payloadlen,(char*) message->payload,message->topic);
-		printf("pi command= %i\r\n",atoi(msg));		
+		printf("pi command= %i\r\n",atoi(msg));
+		rpi.setvalue=atoi(msg);		
 	}
 	
 		mosquitto_topic_matches_sub("pidrone/CMD/DC",message->topic,&match);
@@ -32,11 +33,30 @@ void message_callback(struct mosquitto *mosq,void *obj,const struct mosquitto_me
 		s2=strtok(NULL,"\r");
 		getid=atoi(s1);
 		getvalue=atof(s2);
-		if(getid==dc.id)
+		//~ printf("getid= %i getvalue=%.1f\r\n",getid,getvalue);
+		//~ printf("getid= %i getvalue=%.1f\r\n",dc.id,getvalue);	
+		//~ if(getid==dc.id)
+		if(getid==1)
 		{
 			dc.setvalue=getvalue;
-			printf("dc %i command=%.1f\r\n",dc.id,dc.setvalue);	
+			printf("dcid= %i setvalue=%.1f\r\n",dc.id,dc.setvalue);	
 		}
+		else if(getid ==dcgm.id)
+		{
+			dcgm.setvalue=getvalue;
+			printf("gymbal mode id= %i setvalue=%.1f\r\n",dcgm.id,dcgm.setvalue);
+		}
+				else if(getid ==dcgp.id)
+		{
+			dcgp.setvalue=getvalue;
+			printf("gymbal pitch id= %i setvalue=%.1f\r\n",dcgp.id,dcgp.setvalue);
+		}	
+				else if(getid ==dcgh.id)
+		{
+			dcgh.setvalue=getvalue;
+			printf("gymbal head id= %i setvalue=%.1f\r\n",dcgh.id,dcgh.setvalue);
+		}		
+			
 	}
 	
 			mosquitto_topic_matches_sub("pidrone/CMD/BL",message->topic,&match);
@@ -74,7 +94,7 @@ void mq_init()
 	
 	mosq=mosquitto_new(NULL,true,NULL);
 	mosquitto_message_callback_set(mosq,message_callback);
-	if(mosquitto_connect(mosq,"192.168.0.248",1883,60))
+	if(mosquitto_connect(mosq,"143.248.204.35",1883,60))
 	{
 			printf("mqtt connect error\r\n");;
 	}

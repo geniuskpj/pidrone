@@ -34,9 +34,10 @@ int main(int argc, char **argv)
 {
 	
 	uint64_t rateTimer;
-	uint64_t displayTimer;
+	//uint64_t displayTimer;
 	uint64_t now;
-	
+	uint32_t ControlPeriod=1000;//100ms
+	//uint32_t DisplayPeriod=10000;//100ms
 	
 	if(wiringPiSetup()==-1)
 		return 1;
@@ -49,14 +50,26 @@ int main(int argc, char **argv)
 	RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
 	
 	
+	rateTimer = micros();
 	while(1)
-	{
+	{					while((now-rateTimer)<ControlPeriod)
+			{
+				now=micros();
+
+			}
+			rateTimer= now;
 		digitalWrite(LED1,1);
 		digitalWrite(LED2,0);
-		delay(1);
+							while((now-rateTimer)<ControlPeriod)
+			{
+				now=micros();
+
+			}
+			rateTimer= now;
+		//~ delay(1);
 		digitalWrite(LED1,0);
 		digitalWrite(LED2,1);
-		delay(1);
+		//~ delay(1);
 	
 	}
 

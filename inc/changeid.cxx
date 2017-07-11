@@ -1,5 +1,5 @@
 /*
- * Sonar.cxx
+ * change sonarid.cxx
  * 
  * Copyright 2017  <pi@raspberrypi>
  * 
@@ -22,38 +22,26 @@
  */
 
 
+#include <iostream>
 #include "Sonar.h"
-SONAR::SONAR(uint16_t _id)
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+int main(int argc, char **argv)
 {
-	id=wiringPiI2CSetup(_id);
+		if(wiringPiSetup()==-1)
+		return 1;
+		
+		int id=strtol(argv[1]+2,NULL,16);
+		int newid=strtol(argv[2]+2,NULL,16);
+	SONAR sonar=SONAR(id);	
+	sonar.SetID(newid);
+	printf("%i to %i\r\n",id,newid);
+	delay(100);
+	printf("done\r\n");
+	
+	return 0;
 }
 
-bool SONAR::RequestData()
-{
-	return wiringPiI2CWriteReg8(id,0,81); //send 81(cm response) to 0(command)
-}
-
-uint16_t SONAR::GetValues()
-{
-	return wiringPiI2CReadReg16(id,2)/256;// read 2 byte from 2(result hi)
-}
-
-SONAR::~SONAR()
-{
-
-}
-
-void SONAR::SetID(uint16_t newid)
-{
-                    wiringPiI2CWriteReg8(id,0,0xA0);
-                    delay(20);
-                    wiringPiI2CWriteReg8(id,0,0xAA);
-                    delay(20);
-                    wiringPiI2CWriteReg8(id,0,0xA5);
-                    delay(20);
-                    if(newid>0x77)
-                    {
-                        newid=0x77;
-                    }
-                    wiringPiI2CWriteReg8(id,0,newid*2);
-}
