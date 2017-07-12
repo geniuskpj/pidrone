@@ -1,31 +1,31 @@
 CC := g++
 
 EXTRAINCDIRS += -I "../inc"
-EXTRALDFLAGS += -L/usr/local/lib
+EXTRALDFLAGS += -L/usr/local/lib -L"../lib"
 EXTRALIBS += -lRTIMULib -lwiringPi -lm -lmosquitto -lwiringPiPca9685 -lpthread -lwiringPi
 
 CFLAGS +=
 
-MYOBJS = ../inc/Sonar.o ../inc/nmea.o ../inc/gps.o ../inc/serial.o
+MYOBJS = ../lib/Sonar.o ../lib/nmea.o ../lib/gps.o ../lib/serial.o
 
 .PHONY: all	
-all: ../inc/Sonar.o ../inc/nmea.o ../inc/gps.o ../inc/serial.o bin/sonartest bin/imutest bin/ledtest
+all: ../lib/Sonar.o ../lib/nmea.o ../lib/gps.o ../lib/serial.o bin/sonartest bin/imutest bin/ledtest
 
 .PHONY: clean
 clean:
-	rm -rf bin/*.o bin/* rm -rf ../inc/*.o
+	rm -rf bin/*.o bin/* rm -rf ../lib/*.o
 
-../inc/%.o : ../inc/%.cxx 
-	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS}
+../lib/%.o : ../src/%.cxx 
+	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS} ${EXTRAINCDIRS} 
 
-../inc/gps.o : ../inc/gps.c
-	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS}
+../lib/gps.o : ../src/gps.c
+	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS} ${EXTRAINCDIRS} 
 
-../inc/serial.o : ../inc/serial.c
-	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS}
+../lib/serial.o : ../src/serial.c
+	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS} ${EXTRAINCDIRS} 
 
-../inc/nmea.o : ../inc/nmea.c
-	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS}
+../lib/nmea.o : ../src/nmea.c
+	${CC} -c $< ${CFLAGS} -o $@ ${EXTRALDFLAGS} ${EXTRALIBS} ${EXTRAINCDIRS} 
 
 bin/imutest : imutest.cxx
 	${CC} ${CFLAGS} $^ -o $@ ${EXTRALDFLAGS} ${EXTRALIBS} ${EXTRAINCDIRS} ${MYOBJS}
