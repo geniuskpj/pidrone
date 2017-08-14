@@ -17,6 +17,7 @@
 #define NMEA_MESSAGE_ERR 0xC0
 
 struct gpgga {
+
     // Latitude eg: 4124.8963 (XXYY.ZZKK.. DEG, MIN, SEC.SS)
     double latitude;
     // Latitude eg: N
@@ -28,13 +29,15 @@ struct gpgga {
     // Quality 0, 1, 2
     uint8_t quality;
     // Number of satellites: 1,2,3,4,5...
-    uint8_t satellites;
+    uint8_t satellites;      
     // Altitude eg: 280.2 (Meters above mean sea level)
     double altitude;
 };
 typedef struct gpgga gpgga_t;
 
 struct gprmc {
+    //040757.00 (hhmmss.00)
+    double gptime;
     double latitude;
     char lat;
     double longitude;

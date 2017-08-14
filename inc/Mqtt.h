@@ -78,9 +78,12 @@ void message_callback(struct mosquitto *mosq,void *obj,const struct mosquitto_me
 	if (match)
 	{
 		msg=(char *)message->payload;
+		led.setvalue=strdup(msg);
 		printf("led command=%s\r\n",msg);	
-		led.setvalue=msg;
-		setBuffer(led.setvalue,displayBuffer,length);
+		//~ led.setvalue=msg;
+
+		//~ memcpy(&led.setvalue[0],&msg[0],1);
+		//setBuffer(led.setvalue,displayBuffer,length);
 		letter=0;
 		y=0;
 

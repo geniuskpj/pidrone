@@ -53,9 +53,6 @@ typedef struct Led
 
 typedef struct Pid
 {
-	float mbar;
-	float k;
-	float kv;
 	float kp;
 	float ki;
 	float kd;
@@ -108,8 +105,8 @@ typedef struct Plant
 	
 	DC bz={15,0,255,0,50,0,OK};
 	BL bl={8,0,5000,0,1.86,1.06,OK};
-	PID pitch={0.004,100,20,0.8,0.04,4,6,628,0.01,0,0,0,0,2,1,0,0,0};
-	PID roll={0.004,100,20,0.8,0.04,4,6,628,0.01,0,0,0,0,2,1,0,0,0};
+	PID pitch={8,4,4,6,628,0.01,0,0,0,0,2,1,0,0,0};
+	PID roll={8,4,4,6,628,0.01,0,0,0,0,2,1,0,0,0};
 	//PID yaw={0.004,100,20,0.8,0.04,4,0.006,6280,0.1,0,0,0,0,2,1,0,0};
 	PLANT plant={0.1,10,100,0,0,0};
 	int pwid;
@@ -125,20 +122,22 @@ void rpinit()
 
 
 
-	led.setvalue="123456789  ";
+	//~ led.setvalue="123456789  ";
+	led.setvalue=">  ";
 
 
 
 }
 
-void setGain(PID& s,float mbarnew,float knew,float kvnew)
+void setGain(PID& s,float pnew,float inew,float dnew)
 {
-	s.k=knew;
-	s.kv=kvnew;
-	s.mbar=mbarnew;
-	s.kp=s.mbar*s.kv/s.T;
-	s.ki=s.mbar*s.k/s.T;
-	s.kd=s.mbar/s.T;
+	
+	//~ s.kp=s.mbar*s.kv/s.T;
+	//~ s.ki=s.mbar*s.k/s.T;
+	//~ s.kd=s.mbar/s.T;
+	s.kp=pnew;
+	s.ki=inew;
+	s.kd=dnew;
 
 }
 

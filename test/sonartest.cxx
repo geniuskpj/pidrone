@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 		
 	
 	//init imu
-    	RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
+	RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
 	RTIMU *imu = RTIMU::createIMU(settings);
 	
 	if ((imu==NULL) || (imu->IMUType()==RTIMU_TYPE_NULL))
@@ -107,9 +107,11 @@ int main(int argc, char **argv)
 	//init GPS
 	gps_init();
 	loc_t data;
-data.latitude=0;
-data.longitude=0;
-data.altitude=0;
+	data.latitude=0;
+	data.longitude=0;
+	data.altitude=0;
+	data.speed=0.0;
+	data.satellites=0;
 
 	//init mqtt
 	mq_init();
@@ -127,26 +129,26 @@ data.altitude=0;
 	pinMode(LED2,OUTPUT);
 
 
-			//throttle
-		setThrottle(bl,0);
-		
-		//set angle
-		setAngle(dc,0);
-		setAngle(dc2,0);
-		setAngle(dc3,0);
-		setAngle(dc4,0);		
-		//setAngle(dcgm,0);
-		//setAngle(dcgh,0);
-		//setAngle(dcgp,0);
-		//setAngle(bz,255);
+	//throttle
+	setThrottle(bl,0);
+	
+	//set angle
+	setAngle(dc,0);
+	setAngle(dc2,0);
+	setAngle(dc3,0);
+	setAngle(dc4,0);		
+	//setAngle(dcgm,0);
+	//setAngle(dcgh,0);
+	//setAngle(dcgp,0);
+	//setAngle(bz,255);
 	delay(2000);
 
 	//init controller
 	//~ printf("original kp %f, ki %f, kd %f\r\n",pitch.kp,pitch.ki,pitch.kd);
 	setLim(pitch,dc.min,dc.max);
 	setLim(roll,dc.min,dc.max);
-	setGain(pitch,0.004,100,20);
-	setGain(roll,0.004,100,20);
+	setGain(pitch,8,4,4);
+	setGain(roll,8,4,4);
 	
 	//~ printf("new kp %f, ki %f, kd %f\r\n",pitch.kp,pitch.ki,pitch.kd);
 	
@@ -154,24 +156,15 @@ data.altitude=0;
 	int cnt=0;
 
 	
-        //put all the characters of the scrolling text in a contiguous block
+	//put all the characters of the scrolling text in a contiguous block
+
+	setBuffer(led.setvalue,displayBuffer,length);
 	
-		setBuffer(led.setvalue,displayBuffer,length);
+	for(int j=0;j<8; j++)
+	{
+		printf("%u\r",j,0,displayBuffer[j][0]);
 		
-		for(int j=0;j<8; j++)
-		{
-			printf("%u\r",j,0,displayBuffer[j][0]);
-			
-		}
-
-
-
-
-	
-		
-	            //sonar.SetID(newID);
-
-
+	}
 
 
 
@@ -195,10 +188,9 @@ data.altitude=0;
 
 		
 		tokold=micros();
-		while(imu->IMURead())
-		{
-			
-		}
+		
+		
+		while(imu->IMURead());
 		imuData = imu->getIMUData();
 
 
@@ -216,7 +208,7 @@ data.altitude=0;
 		pitch.y=atof(imuresult); //pitch
 		
 		
-		if(cnt==10	)
+		if(cnt==10)
 		{
 			roll.r=0;
 			pitch.r=0;
@@ -280,6 +272,8 @@ data.altitude=0;
 	
 		//led scroll
 		//~ ledScroll(displayBuffer,length,letter,y);
+			//~ printf("text is %s\r\n",led.setvalue);
+		ledDraw(displayBuffer2,led.setvalue);
 
 		
 					
@@ -318,7 +312,7 @@ data.altitude=0;
 			sprintf(mqbuf,"%i,%i,%i\r",sonar.id,sonar.distance,sonar_status);
 			mq_send("pidrone/SONAR",mqbuf);
 			
-			sprintf(mqbuf,"%lf,%lf,%lf,%i\r",data.latitude, data.longitude,data.altitude,gps_status);	
+			sprintf(mqbuf,"%lf,%lf,%lf,%i,%lf,%i\r",data.latitude, data.longitude,data.altitude,data.satellites,data.speed*1.8,gps_status);	
 			mq_send("pidrone/GPS",mqbuf);
 			sprintf(mqbuf,"%s,%i\r",RTMath::displayDegrees("",imuData.fusionPose),imu_status);
 			mq_send("pidrone/IMU",mqbuf);

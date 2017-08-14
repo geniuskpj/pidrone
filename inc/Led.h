@@ -15,6 +15,7 @@ __u16 block[I2C_SMBUS_BLOCK_MAX];
 int res, i2cbus, daddress, address, size, file;
 uint16_t   bitShifted[8];
 uint16_t   displayBuffer[8][15*8];
+uint16_t displayBuffer2[8];
 	int length;
         int letter=0;
         int y=0;
@@ -75,6 +76,20 @@ void ledScroll(uint16_t  dBuffer[8][15*8],int length, int& letter,int& y)
 				letter=0;
 					
 			}
+}
+
+void ledDraw(uint16_t  dBuffer[8],const char *text)
+{
+	int Vposition,character;
+	character=text[0]-31;
+
+	for(Vposition = 0; Vposition < 8 ; Vposition++)
+	{
+		dBuffer[Vposition]=FONT8x8[character][Vposition];
+		//printf("haha %i,%i= %u\r\n",Vposition,i,displayBuffer[Vposition][i]);
+			
+	}
+	displayImage(dBuffer,res, daddress, file);
 }
 
 void setBuffer(const char *text,uint16_t (*dBuffer)[15*8],int& length)

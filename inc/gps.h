@@ -2,11 +2,13 @@
 #define _GPS_H_
 
 struct location {
+    double gptime;
     double latitude;
     double longitude;
     double speed;
     double altitude;
     double course;
+    unsigned char satellites;
 };
 typedef struct location loc_t;
 

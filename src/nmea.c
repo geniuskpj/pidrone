@@ -61,6 +61,7 @@ void nmea_parse_gprmc(char *nmea, gprmc_t *loc)
     char *p = nmea;
 
     p = strchr(p, ',')+1; //skip time
+    loc->gptime =atof(p);
     p = strchr(p, ',')+1; //skip status
 
     p = strchr(p, ',')+1;
