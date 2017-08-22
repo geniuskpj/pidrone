@@ -137,7 +137,7 @@ int main(int argc, char **argv)
 	setAngle(dc2,0);
 	setAngle(dc3,0);
 	setAngle(dc4,0);		
-	//setAngle(dcgm,0);
+	//setAngle(dcgm,-90);
 	//setAngle(dcgh,0);
 	//setAngle(dcgp,0);
 	//setAngle(bz,255);
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 		while(imu->IMURead());
 		imuData = imu->getIMUData();
 
-
+ 
 		
 
 
@@ -217,7 +217,7 @@ int main(int argc, char **argv)
 
 		}
 		
-		
+		 
 
 		
 		//PID simulation
@@ -236,15 +236,15 @@ int main(int argc, char **argv)
 		if(rpi.setvalue==1)
 		{
 		getInput(pitch,pitch.r,pitch.y);
-		getInput(roll,roll.r,roll.y);
-		//~ printf("pitch=%f,u=%f,up=%f,ui=%f,ud=%f,r=%f\r\n",pitch.y,pitch.u,pitch.up,pitch.ui,pitch.ud,pitch.r);
-		printf("roll=%f,u=%f,up=%f,ui=%f,ud=%f,r=%f\r\n",roll.y,roll.u,roll.up,roll.ui,roll.ud,roll.r);
+		//~ getInput(roll,roll.r,roll.y);
+		printf("pitch=%f,u=%f,up=%f,ui=%f,ud=%f,r=%f\r\n",pitch.y,pitch.u,pitch.up,pitch.ui,pitch.ud,pitch.r);
+		//~ printf("roll=%f,u=%f,up=%f,ui=%f,ud=%f,r=%f\r\n",roll.y,roll.u,roll.up,roll.ui,roll.ud,roll.r);
 		dc.setvalue=pitch.u;
-		dc2.setvalue=roll.u;
+		//~ dc2.setvalue=roll.u;
 		dc3.setvalue=-pitch.u;
-		dc4.setvalue=-roll.u;
+		//~ dc4.setvalue=-roll.u;
 		}
-
+ 
 
 			//throttle
 		setThrottle(bl,bl.setvalue);

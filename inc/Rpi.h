@@ -92,9 +92,9 @@ typedef struct Plant
 	STATUS gps_status,imu_status,sonar_status;
 	LED led;
 	RPI rpi={0,OK};
-	DC dcgm={0,-90,90,-90,OK};  //mode of gymbal
-	DC dcgp={1,0,90,-90,OK};  // gymbal pitch
-	DC dcgh={2,0,90,-90,OK}; //gymbal heading
+	DC dcgm={0,-90,90,-90,2.5,0.5,OK};  //mode of gymbal
+	DC dcgp={1,0,90,-90,2.5,0.5,OK};  // gymbal pitch
+	DC dcgh={2,0,90,-90,2.5,0.5,OK}; //gymbal heading
 	
 	
 	DC dc={4,0,90,-90,2.5,0.5,OK};
@@ -104,7 +104,8 @@ typedef struct Plant
 
 	
 	DC bz={15,0,255,0,50,0,OK};
-	BL bl={8,0,5000,0,1.86,1.06,OK};
+	//BL bl={8,0,5000,0,1.86,1.06,OK};
+	BL bl={8,0,5000,0,1.86,1.16,OK};
 	PID pitch={8,4,4,6,628,0.01,0,0,0,0,2,1,0,0,0};
 	PID roll={8,4,4,6,628,0.01,0,0,0,0,2,1,0,0,0};
 	//PID yaw={0.004,100,20,0.8,0.04,4,0.006,6280,0.1,0,0,0,0,2,1,0,0};

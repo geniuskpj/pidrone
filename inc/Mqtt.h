@@ -41,17 +41,17 @@ void message_callback(struct mosquitto *mosq,void *obj,const struct mosquitto_me
 			dc.setvalue=getvalue;
 			printf("dcid= %i setvalue=%.1f\r\n",dc.id,dc.setvalue);	
 		}
-		else if(getid ==dcgm.id)
+		else if(getid ==5)
 		{
 			dcgm.setvalue=getvalue;
 			printf("gymbal mode id= %i setvalue=%.1f\r\n",dcgm.id,dcgm.setvalue);
 		}
-				else if(getid ==dcgp.id)
+				else if(getid ==6)
 		{
 			dcgp.setvalue=getvalue;
 			printf("gymbal pitch id= %i setvalue=%.1f\r\n",dcgp.id,dcgp.setvalue);
 		}	
-				else if(getid ==dcgh.id)
+				else if(getid ==7)
 		{
 			dcgh.setvalue=getvalue;
 			printf("gymbal head id= %i setvalue=%.1f\r\n",dcgh.id,dcgh.setvalue);
@@ -67,11 +67,31 @@ void message_callback(struct mosquitto *mosq,void *obj,const struct mosquitto_me
 		s2=strtok(NULL,"\r");
 		getid=atoi(s1);
 		getvalue=atof(s2);
-		if(getid==bl.id)
+		if(getid==1)
 		{
 			bl.setvalue=(int)getvalue;
 			printf("bldc %i command=%i\r\n",bl.id,bl.setvalue);	
 		}
+	}
+	
+	mosquitto_topic_matches_sub("pidrone/CMD/MV",message->topic,&match);
+	if (match)
+	{
+		rpi.setvalue=1;
+		msg=(char *)message->payload;
+		s1=strtok(msg,",");
+		roll.r=atoi(s1)*15;
+		s1=strtok(NULL,",");
+		pitch.r=atoi(s1)*15;
+		s1=strtok(NULL,",");
+		//~ yaw.r=atoi(s1)*15;
+		s1=strtok(NULL,",");
+		bl.setvalue=atoi(s1)*2000;
+		s1=strtok(NULL,",");
+		dcgp.setvalue=atoi(s1);
+		s1=strtok(NULL,"");
+		dcgh.setvalue=atoi(s1);
+		printf("input : roll %i, pitch %i, yaw %i, bl %i, gp %i, gh %i\r\n",roll.r,pitch.r,0,bl.setvalue,(int)dcgp.setvalue,(int)dcgh.setvalue);	
 	}
 	
 				mosquitto_topic_matches_sub("pidrone/CMD/LED",message->topic,&match);
