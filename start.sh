@@ -23,14 +23,14 @@
 #******************************************************************************/
 
 ## This example shows how to invoke mjpg-streamer from the command line
-
+cd /home/pi/mjpg-streamer-master/mjpg-streamer-experimental
 export LD_LIBRARY_PATH="$(pwd)"
 #./mjpg_streamer -i "input_uvc.so --help"
 
-
-#mjpg_streamer -i "input_uvc.so -r 640x480 -n -y -f 30" -o "output_http.so -w ./www"
-#mjpg_streamer -i "input_uvc.so -r 320x240 -n -y -f 10" -o "output_http.so -w ./www"
-mjpg_streamer -i "input_raspicam.so -x 320 -y 240 -fps 10" -o "output_http.so -w ./www"
+#./mjpg_streamer -i "input_uvc.so -r 640x480 -n -y -f 30" -o "output_http.so -w ./www"
+#./mjpg_streamer -i "input_uvc.so -r 320x240 -n -y -f 10" -o "output_http.so -w ./www"
+./mjpg_streamer -i "input_raspicam.so -x 640 -y 480 -fps 10" -o "output_http.so -w ./www -p 8081"
+#sudo ./mjpg_streamer -i "input_raspicam.so -x 320 -y 240 -fps 10" -o "output_rtsp.so"
 #./mjpg_streamer -i "./input_uvc.so -d /dev/video0" -i "./input_uvc.so -d /dev/video1" -o "./output_http.so -w ./www"
 #valgrind ./mjpg_streamer -i "./input_uvc.so" -o "./output_http.so -w ./www"
 

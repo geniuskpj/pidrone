@@ -73,9 +73,11 @@ int main(int argc, char **argv)
 	//init Sonar
 	
 	SONAR sonar=SONAR(sonarid);
-	//~ SONAR sonar2=SONAR(sonarid2);
+	//~ SONAR sonar2=SONAR(sonarid2);	
 	//~ SONAR sonar3=SONAR(sonarid3);
 	//~ SONAR sonar4=SONAR(sonarid4);
+	
+	sonar.distance=0;
 	
 	//init rpi
 	rpinit();
@@ -131,15 +133,16 @@ int main(int argc, char **argv)
 
 	//throttle
 	setThrottle(bl,0);
+	setThrottle(bl2,0);
 	
 	//set angle
 	setAngle(dc,0);
 	setAngle(dc2,0);
 	setAngle(dc3,0);
 	setAngle(dc4,0);		
-	//setAngle(dcgm,-90);
-	//setAngle(dcgh,0);
-	//setAngle(dcgp,0);
+	setAngle(dcgm,0);
+	setAngle(dcgh,0);
+	setAngle(dcgp,0);
 	//setAngle(bz,255);
 	delay(2000);
 
@@ -147,8 +150,10 @@ int main(int argc, char **argv)
 	//~ printf("original kp %f, ki %f, kd %f\r\n",pitch.kp,pitch.ki,pitch.kd);
 	setLim(pitch,dc.min,dc.max);
 	setLim(roll,dc.min,dc.max);
+	setLim(yaw,-1,1);
 	setGain(pitch,8,4,4);
 	setGain(roll,8,4,4);
+	setGain(yaw,0.0008,0.0004,0.0004);
 	
 	//~ printf("new kp %f, ki %f, kd %f\r\n",pitch.kp,pitch.ki,pitch.kd);
 	
@@ -207,13 +212,20 @@ int main(int argc, char **argv)
 		imuresult=strtok(NULL,",");
 		pitch.y=atof(imuresult); //pitch
 		
+		imuresult=strtok(NULL,":");
+		imuresult=strtok(NULL,":");
+		yaw.y=atof(imuresult); //yaw
+		//~ printf("yaw %f\r\n",yaw.y);
+		
 		
 		if(cnt==10)
 		{
 			roll.r=0;
 			pitch.r=0;
+			yaw.r=yaw.y;
 			roll.yo=roll.y;
 			pitch.yo=pitch.y;
+			yaw.yo=yaw.y;
 
 		}
 		
@@ -233,27 +245,43 @@ int main(int argc, char **argv)
 			//~ fflush(stdout);
 			//~ cnt++;
 		//~ }
-		if(rpi.setvalue==1)
+		if(rpi.setvalue==1||rpi.setvalue==4)
 		{
 		getInput(pitch,pitch.r,pitch.y);
-		//~ getInput(roll,roll.r,roll.y);
 		printf("pitch=%f,u=%f,up=%f,ui=%f,ud=%f,r=%f\r\n",pitch.y,pitch.u,pitch.up,pitch.ui,pitch.ud,pitch.r);
-		//~ printf("roll=%f,u=%f,up=%f,ui=%f,ud=%f,r=%f\r\n",roll.y,roll.u,roll.up,roll.ui,roll.ud,roll.r);
 		dc.setvalue=pitch.u;
-		//~ dc2.setvalue=roll.u;
 		dc3.setvalue=-pitch.u;
-		//~ dc4.setvalue=-roll.u;
+		}
+		
+				if(rpi.setvalue==2||rpi.setvalue==4)
+		{
+		getInput(roll,roll.r,roll.y);
+		printf("roll=%f,u=%f,up=%f,ui=%f,ud=%f,r=%f\r\n",roll.y,roll.u,roll.up,roll.ui,roll.ud,roll.r);
+		dc2.setvalue=roll.u;
+		dc4.setvalue=-roll.u;
+		}
+		
+				if(rpi.setvalue==3||rpi.setvalue==4)
+		{
+		getInput(yaw,yaw.r,yaw.y);
+		printf("yaw=%f,u=%f,up=%f,ui=%f,ud=%f,r=%f\r\n",yaw.y,yaw.u,yaw.up,yaw.ui,yaw.ud,yaw.r);
+		yawgain=yaw.u;
+		
 		}
  
 
 			//throttle
-		setThrottle(bl,bl.setvalue);
+		setThrottle(bl,bl.setvalue*(1-yawgain));
+		setThrottle(bl2,bl2.setvalue*(1+yawgain));
 		
 		//set angle
 		setAngle(dc,dc.setvalue);
 		setAngle(dc2,dc2.setvalue);
 		setAngle(dc3,dc3.setvalue);
 		setAngle(dc4,dc4.setvalue);
+		setAngle(cm1,cm1.setvalue);
+		setAngle(cm2,cm2.setvalue);
+		
 		setAngle(dcgm,dcgm.setvalue);
 		setAngle(dcgh,dcgh.setvalue);
 		setAngle(dcgp,dcgp.setvalue);
@@ -287,7 +315,6 @@ int main(int argc, char **argv)
 			//get gps data
 			gps_location(&data);
 			lBeep();
-			
 			
 			
 
@@ -398,12 +425,18 @@ void  INThandler(int sig)
 	
 	
 		setAngle(dc,0);
+		setAngle(dc2,0);
+		setAngle(dc3,0);
+		setAngle(dc4,0);
+		setAngle(cm1,0);
+		setAngle(cm2,0);
 		setAngle(dcgm,0);
 		setAngle(dcgh,0);
 		setAngle(dcgp,0);       
 	
 	pca9685PWMReset(pwid);
 		setThrottle(bl,0);
+		setThrottle(bl2,0);
 		setAngle(bz,255);
 	
 	signal(sig, SIG_IGN);

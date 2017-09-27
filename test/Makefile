@@ -4,7 +4,7 @@ EXTRAINCDIRS += -I "../inc"
 EXTRALDFLAGS += -L/usr/local/lib -L"../lib"
 EXTRALIBS += -lRTIMULib -lwiringPi -lm -lmosquitto -lwiringPiPca9685 -lpthread -lwiringPi
 
-CFLAGS +=
+CFLAGS += -O2
 
 MYOBJS = ../lib/Sonar.o ../lib/nmea.o ../lib/gps.o ../lib/serial.o
 
