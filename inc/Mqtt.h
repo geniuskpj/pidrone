@@ -124,17 +124,17 @@ void message_callback(struct mosquitto *mosq,void *obj,const struct mosquitto_me
 		}
 	}
 	
-	mosquitto_topic_matches_sub("pidrone/MV",message->topic,&match);
+	mosquitto_topic_matches_sub("pidrone/CMD/MV",message->topic,&match);
 	if (match)
 	{
-		//~ rpi.setvalue=4;
+		rpi.setvalue=4;
 		msg=(char *)message->payload;
 		s1=strtok(msg,",");
 		roll.r=atof(s1)*15;
 		s1=strtok(NULL,",");
 		pitch.r=atof(s1)*15;
 		s1=strtok(NULL,",");
-		yaw.r=yaw.r+atof(s1);
+		yaw.r=yaw.r+5.0*atof(s1);
 		if(yaw.r>180.0)
 		{
 			yaw.r=180.0;
@@ -144,13 +144,15 @@ void message_callback(struct mosquitto *mosq,void *obj,const struct mosquitto_me
 			yaw.r=-180.0;
 		}
 		s1=strtok(NULL,",");
-		bl.setvalue=atof(s1)*2000;
+		bl.setvalue=(int)(atof(s1)*2000.0);
 		bl2.setvalue=bl.setvalue;
 		s1=strtok(NULL,",");
-		dcgp.setvalue=atof(s1)*90;
-		s1=strtok(NULL,"");
-		dcgh.setvalue=atof(s1)*90;
-		printf("input : roll %f, pitch %f, yaw %f, bl %i, gp %i, gh %i\r\n",roll.r,pitch.r,0,bl.setvalue,(int)dcgp.setvalue,(int)dcgh.setvalue);	
+		dcgp.setvalue=(atof(s1)*90);
+		s1=strtok(NULL,"\r");
+		
+		dcgh.setvalue=(atof(s1)*90);
+
+		printf("input : roll %f, pitch %f, yaw %f, bl %i, gp %f, gh %f\r\n",roll.r,pitch.r,yaw.r,bl.setvalue,dcgp.setvalue,dcgh.setvalue);	
 	}
 	
 		mosquitto_topic_matches_sub("pidrone/CMD/FG/get",message->topic,&match);
