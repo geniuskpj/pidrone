@@ -92,9 +92,9 @@ typedef struct Plant
 	STATUS gps_status,imu_status,sonar_status;
 	LED led;
 	RPI rpi={0,OK};
-	DC dcgm={0,-90,90,-90,2.5,0.5,OK};  //mode of gymbal
-	DC dcgp={1,0,90,-90,2.5,0.5,OK};  // gymbal pitch
-	DC dcgh={2,0,90,-90,2.5,0.5,OK}; //gymbal heading
+	DC dcgm={1,-90,90,-90,2.5,0.5,OK};  //mode of gymbal
+	DC dcgp={2,0,90,-90,2.5,0.5,OK};  // gymbal pitch
+	DC dcgh={3,0,90,-90,2.5,0.5,OK}; //gymbal heading
 	
 	
 	DC dc={4,0,90,-90,2.5,0.5,OK};
@@ -121,6 +121,15 @@ typedef struct Plant
 	int llcount=0;
 	int lcount=6;
 	float yawgain=0.0;
+	int bloffset=0;
+	float jgainr=15;
+	float jgainp=15;
+	float jgainy=5;
+	float jgainb=2000;
+	float jgaingp=90;
+	float jgaingh=90;
+	char *user="pi";
+	char *pw="vkdlemfhs";
 	
 void rpinit()
 {

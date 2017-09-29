@@ -1,2 +1,2 @@
 #!/bin/sh
-./bin/sonartest
+/home/pi/projects/pidrone/test/bin/sonartest

@@ -130,11 +130,11 @@ void message_callback(struct mosquitto *mosq,void *obj,const struct mosquitto_me
 		rpi.setvalue=4;
 		msg=(char *)message->payload;
 		s1=strtok(msg,",");
-		roll.r=atof(s1)*15;
+		roll.r=atof(s1)*jgainr;
 		s1=strtok(NULL,",");
-		pitch.r=atof(s1)*15;
+		pitch.r=atof(s1)*jgainp;
 		s1=strtok(NULL,",");
-		yaw.r=yaw.r+5.0*atof(s1);
+		yaw.r=yaw.r+jgainy*atof(s1);
 		if(yaw.r>180.0)
 		{
 			yaw.r=180.0;
@@ -144,13 +144,13 @@ void message_callback(struct mosquitto *mosq,void *obj,const struct mosquitto_me
 			yaw.r=-180.0;
 		}
 		s1=strtok(NULL,",");
-		bl.setvalue=(int)(atof(s1)*2000.0);
+		bl.setvalue=(int)(atof(s1)*jgainb);
 		bl2.setvalue=bl.setvalue;
 		s1=strtok(NULL,",");
-		dcgp.setvalue=(atof(s1)*90);
+		dcgp.setvalue=(atof(s1)*jgaingp);
 		s1=strtok(NULL,"\r");
 		
-		dcgh.setvalue=(atof(s1)*90);
+		dcgh.setvalue=(atof(s1)*jgaingh);
 
 		printf("input : roll %f, pitch %f, yaw %f, bl %i, gp %f, gh %f\r\n",roll.r,pitch.r,yaw.r,bl.setvalue,dcgp.setvalue,dcgh.setvalue);	
 	}
@@ -320,6 +320,7 @@ void mq_init()
 		mosquitto_lib_init();
 	
 	mosq=mosquitto_new(NULL,true,NULL);
+	mosquitto_username_pw_set(mosq,user,pw);
 	mosquitto_message_callback_set(mosq,message_callback);
 	if(mosquitto_connect(mosq,"58.224.86.126",1883,60))
 	{
